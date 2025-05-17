@@ -17,7 +17,6 @@ let isSending = false;
 document.getElementById('loginBtn').onclick = () => {
   token = tokenInput.value.trim();
   if (!token) return alert('اكتب التوكن');
-
   loginSection.classList.add('hidden');
   mainSection.classList.remove('hidden');
 };
@@ -69,22 +68,25 @@ startBtn.onclick = async () => {
 
   if (!channelId) return alert("اكتب ID الروم");
 
-  messageQueue = shuffleArray(messages);
   isSending = true;
 
-  for (let msg of messageQueue) {
-    if (!isSending) {
-      logBox.innerText += "🛑 تم إيقاف الإرسال.\n";
-      break;
+  while (isSending) {
+    messageQueue = shuffleArray(messages);
+
+    for (let msg of messageQueue) {
+      if (!isSending) {
+        logBox.innerText += "🛑 تم إيقاف الإرسال.\n";
+        break;
+      }
+
+      let content = `${mention} ${msg}`.trim();
+      await sendMessage(channelId, content);
+      await new Promise(r => setTimeout(r, delay));
     }
 
-    let content = `${mention} ${msg}`.trim();
-    await sendMessage(channelId, content);
-    await new Promise(r => setTimeout(r, delay));
-  }
-
-  if (isSending) {
-    logBox.innerText += `✅ تم الإرسال لكل الرسائل.\n`;
+    if (isSending) {
+      logBox.innerText += "🔁 إعادة إرسال من جديد...\n";
+    }
   }
 };
 
