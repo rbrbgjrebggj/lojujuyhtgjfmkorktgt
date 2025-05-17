@@ -32,22 +32,33 @@ function shuffleArray(array) {
 }
 
 async function sendMessage(channelId, content) {
-  const url = `https://discord.com/api/v9/channels/${channelId}/messages`;
+  const url = `https://discord.com/api/v10/channels/${channelId}/messages`;
   const data = { content };
-  const res = await fetch(url, {
-    method: "POST",
-    headers: {
-      "Authorization": token,
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(data)
-  });
 
-  const txt = await res.text();
-  if (res.ok) {
-    logBox.innerText += `✅ تم الإرسال: ${content}\n`;
-  } else {
-    logBox.innerText += `❌ خطأ: ${res.status} - ${txt}\n`;
+  while (true) {
+    const res = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Authorization": token,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(data)
+    });
+
+    const txt = await res.text();
+
+    if (res.status === 429) {
+      const retryData = JSON.parse(txt);
+      const waitTime = retryData.retry_after * 1000;
+      logBox.innerText += `⏳ Rate Limited! بننتظر ${retryData.retry_after} ثانية...\n`;
+      await new Promise(r => setTimeout(r, waitTime));
+    } else if (!res.ok) {
+      logBox.innerText += `❌ خطأ: ${res.status} - ${txt}\n`;
+      break;
+    } else {
+      logBox.innerText += `✅ تم الإرسال: ${content}\n`;
+      break;
+    }
   }
 }
 
