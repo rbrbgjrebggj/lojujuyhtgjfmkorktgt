@@ -16,7 +16,7 @@ let isSending = false;
 
 document.getElementById('loginBtn').onclick = () => {
   token = tokenInput.value.trim();
-  if (!token) return alert('اكتب التوكن');
+  if (!token) return alert('التوكن');
   loginSection.classList.add('hidden');
   mainSection.classList.remove('hidden');
 };
