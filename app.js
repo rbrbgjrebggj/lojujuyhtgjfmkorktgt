@@ -49,13 +49,13 @@ async function sendMessage(channelId, content) {
     if (res.status === 429) {
       const retryData = JSON.parse(txt);
       const waitTime = retryData.retry_after * 1000;
-      logBox.innerText += `⏳ Rate Limited! بننتظر ${retryData.retry_after} ثانية...\n`;
+      logBox.innerText += `Rate Limited! بننتظر ${retryData.retry_after} ثانية...\n`;
       await new Promise(r => setTimeout(r, waitTime));
     } else if (!res.ok) {
-      logBox.innerText += `❌ خطأ: ${res.status} - ${txt}\n`;
+      logBox.innerText += ` خطأ: ${res.status} - ${txt}\n`;
       break;
     } else {
-      logBox.innerText += `✅ تم الإرسال: ${content}\n`;
+      logBox.innerText += ` تم الإرسال: ${content}\n`;
       break;
     }
   }
@@ -75,7 +75,7 @@ startBtn.onclick = async () => {
 
     for (let msg of messageQueue) {
       if (!isSending) {
-        logBox.innerText += "🛑 تم إيقاف الإرسال.\n";
+        logBox.innerText += " تم إيقاف الإرسال.\n";
         break;
       }
 
@@ -85,7 +85,7 @@ startBtn.onclick = async () => {
     }
 
     if (isSending) {
-      logBox.innerText += "🔁 إعادة إرسال من جديد...\n";
+      logBox.innerText += " إعادة إرسال من جديد...\n";
     }
   }
 };
