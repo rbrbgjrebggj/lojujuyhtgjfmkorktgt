@@ -1,0 +1,54 @@
+{
+  "app": {
+    "name": "Discord Spammer Pro",
+    "version": "5.0.0",
+    "author": "497 Group",
+    "license": "Premium",
+    "updateCheck": true
+  },
+  "defaults": {
+    "delay": 1.0,
+    "speed": 10,
+    "mode": "sequential",
+    "maxTokens": 100,
+    "maxMessages": 500,
+    "autoSave": true,
+    "autoBackup": true
+  },
+  "limits": {
+    "maxSpeed": 100,
+    "minDelay": 0.1,
+    "maxRetries": 5,
+    "rateLimitDelay": 2,
+    "requestTimeout": 10000,
+    "concurrentRequests": 5
+  },
+  "features": {
+    "multiToken": true,
+    "smartMode": true,
+    "autoRotate": true,
+    "proxySupport": true,
+    "encryption": true,
+    "analytics": true,
+    "notifications": true,
+    "autoUpdate": true
+  },
+  "ui": {
+    "theme": "dark",
+    "language": "ar",
+    "animations": true,
+    "compactMode": false,
+    "showStats": true
+  },
+  "security": {
+    "encryptTokens": true,
+    "clearHistory": true,
+    "autoLogout": false,
+    "passwordProtect": false
+  },
+  "backup": {
+    "autoBackupInterval": 3600,
+    "maxBackups": 10,
+    "backupLocation": "local"
+  }
+}
