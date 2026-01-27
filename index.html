@@ -1,26 +1,268 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <title>497 Group</title>
-  <link rel="stylesheet" href="style.css">
-  <script type="module" src="app.js" defer></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discord Multi-Token</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
 </head>
 <body>
-  <div class="container" id="login">
-    <h1>497 Group</h1>
-    <input type="text" id="tokenInput" placeholder="التوكن">
-    <button id="loginBtn">دخول</button>
-  </div>
+    <!-- 🌙 مفتاح الوضع الليلي -->
+    <div class="theme-toggle">
+        <i class="fas fa-moon"></i>
+    </div>
 
-  <div class="container hidden" id="main">
-    <h1>497 - Group</h1>
-    <input type="text" id="channelId" placeholder="ID الروم (قروب أو خاص)">
-    <input type="text" id="mention" placeholder="منشن (اختياري)">
-    <input type="number" id="delay" placeholder="تأخير بين الرسائل (بالثواني)" value="1" step="0.1">
-    <button id="startBtn">تشغيل !</button>
-    <button id="stopBtn">ايقاف !</button>
-    <pre id="logBox"></pre>
-    <footer>497 Group ©</footer>  </div>
+    <!-- 🏆 الشريط العلوي -->
+    <nav class="navbar">
+        <div class="nav-brand">
+            <i class="fas fa-robot"></i>
+            <h1>Discord Spammer Pro</h1>
+            <span class="version">v5.0 Premium</span>
+        </div>
+        <div class="nav-stats">
+            <span class="stat"><i class="fas fa-key"></i> <span id="tokenCount">0</span> توكن</span>
+            <span class="stat"><i class="fas fa-comment"></i> <span id="msgCount">0</span> رسالة</span>
+            <span class="stat"><i class="fas fa-bolt"></i> <span id="speed">0</span>/ثانية</span>
+        </div>
+    </nav>
+
+    <!-- 📱 الواجهة الرئيسية -->
+    <div class="dashboard">
+        <!-- 🎯 اللوحة اليسرى -->
+        <div class="panel left-panel">
+            <!-- 🔐 قسم التوكنات -->
+            <section class="card token-section">
+                <h2><i class="fas fa-key"></i> إدارة التوكنات</h2>
+                
+                <div class="token-input-group">
+                    <textarea id="bulkTokens" placeholder="أدخل التوكنات (كل توكن في سطر)&#10;أو اسحب وأفلت ملف tokens.txt"></textarea>
+                    <div class="token-actions">
+                        <button class="btn btn-primary" id="loadTokens">
+                            <i class="fas fa-upload"></i> تحميل توكنات
+                        </button>
+                        <button class="btn btn-success" id="verifyTokens">
+                            <i class="fas fa-check-circle"></i> فحص التوكنات
+                        </button>
+                        <button class="btn btn-danger" id="clearTokens">
+                            <i class="fas fa-trash"></i> مسح الكل
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 📊 قائمة التوكنات -->
+                <div class="tokens-list">
+                    <h3><i class="fas fa-list"></i> التوكنات النشطة</h3>
+                    <div id="tokensContainer" class="tokens-container">
+                        <!-- ستظهر التوكنات هنا -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- ⚙️ قسم الإعدادات -->
+            <section class="card settings-section">
+                <h2><i class="fas fa-cogs"></i> إعدادات متقدمة</h2>
+                
+                <div class="settings-grid">
+                    <div class="setting-item">
+                        <label><i class="fas fa-hashtag"></i> ID الروم</label>
+                        <input type="text" id="channelId" placeholder="اكتب ID الروم هنا...">
+                    </div>
+                    
+                    <div class="setting-item">
+                        <label><i class="fas fa-at"></i> المنشن (اختياري)</label>
+                        <input type="text" id="mention" placeholder="@everyone أو @role">
+                    </div>
+                    
+                    <div class="setting-item">
+                        <label><i class="fas fa-clock"></i> التأخير (ثانية)</label>
+                        <input type="range" id="delayRange" min="0.1" max="10" step="0.1" value="1">
+                        <input type="number" id="delayInput" min="0.1" max="10" step="0.1" value="1">
+                    </div>
+                    
+                    <div class="setting-item">
+                        <label><i class="fas fa-bolt"></i> السرعة (رسالة/ثانية)</label>
+                        <input type="range" id="speedRange" min="1" max="100" step="1" value="10">
+                        <span id="speedValue">10</span>
+                    </div>
+                </div>
+                
+                <!-- 🔄 وضع الإرسال -->
+                <div class="mode-selector">
+                    <h3><i class="fas fa-sync"></i> وضع الإرسال</h3>
+                    <div class="mode-buttons">
+                        <button class="mode-btn active" data-mode="sequential">
+                            <i class="fas fa-stream"></i> تسلسلي
+                        </button>
+                        <button class="mode-btn" data-mode="random">
+                            <i class="fas fa-random"></i> عشوائي
+                        </button>
+                        <button class="mode-btn" data-mode="simultaneous">
+                            <i class="fas fa-layer-group"></i> متزامن
+                        </button>
+                        <button class="mode-btn" data-mode="smart">
+                            <i class="fas fa-brain"></i> ذكي
+                        </button>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- 🎯 اللوحة اليمنى -->
+        <div class="panel right-panel">
+            <!-- 📨 قسم الرسائل -->
+            <section class="card messages-section">
+                <h2><i class="fas fa-envelope"></i> إدارة الرسائل</h2>
+                
+                <div class="messages-tools">
+                    <button class="btn btn-primary" id="addMessage">
+                        <i class="fas fa-plus"></i> إضافة رسالة
+                    </button>
+                    <button class="btn btn-success" id="importMessages">
+                        <i class="fas fa-file-import"></i> استيراد ملف
+                    </button>
+                    <button class="btn btn-warning" id="shuffleMessages">
+                        <i class="fas fa-random"></i> خلط الرسائل
+                    </button>
+                </div>
+                
+                <!-- 📝 محرر الرسائل -->
+                <div class="message-editor">
+                    <textarea id="messageEditor" placeholder="اكتب رسالة جديدة هنا..."></textarea>
+                    <div class="editor-tools">
+                        <button class="tool-btn" data-tool="emoji"><i class="far fa-smile"></i></button>
+                        <button class="tool-btn" data-tool="mention"><i class="fas fa-at"></i></button>
+                        <button class="tool-btn" data-tool="link"><i class="fas fa-link"></i></button>
+                        <button class="tool-btn" data-tool="bold"><i class="fas fa-bold"></i></button>
+                    </div>
+                </div>
+                
+                <!-- 📋 قائمة الرسائل -->
+                <div class="messages-list">
+                    <h3><i class="fas fa-list-ol"></i> قائمة الرسائل <span class="count" id="messagesCount">0</span></h3>
+                    <div id="messagesContainer" class="messages-container">
+                        <!-- ستظهر الرسائل هنا -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- 🎮 قسم التحكم -->
+            <section class="card control-section">
+                <h2><i class="fas fa-gamepad"></i> لوحة التحكم</h2>
+                
+                <div class="control-buttons">
+                    <button class="btn-control start-btn" id="startBtn">
+                        <i class="fas fa-play"></i> بدء الإرسال
+                    </button>
+                    <button class="btn-control pause-btn" id="pauseBtn">
+                        <i class="fas fa-pause"></i> إيقاف مؤقت
+                    </button>
+                    <button class="btn-control stop-btn" id="stopBtn">
+                        <i class="fas fa-stop"></i> إيقاف كلي
+                    </button>
+                    <button class="btn-control test-btn" id="testBtn">
+                        <i class="fas fa-vial"></i> اختبار سريع
+                    </button>
+                </div>
+                
+                <!-- 📊 إحصائيات حية -->
+                <div class="live-stats">
+                    <div class="stat-card">
+                        <i class="fas fa-paper-plane"></i>
+                        <div>
+                            <h4>مرسلة</h4>
+                            <span id="sentCount">0</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-clock"></i>
+                        <div>
+                            <h4>متبقية</h4>
+                            <span id="remainingCount">0</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <div>
+                            <h4>السرعة</h4>
+                            <span id="currentSpeed">0</span>/ث
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-user-friends"></i>
+                        <div>
+                            <h4>توكن نشط</h4>
+                            <span id="activeTokens">0</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 📈 شريط التقدم -->
+                <div class="progress-section">
+                    <div class="progress-header">
+                        <span>تقدم الإرسال</span>
+                        <span id="progressPercent">0%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <div class="progress-time">
+                        <span>الوقت المتبقي: <span id="timeRemaining">--:--</span></span>
+                        <span>الوقت المنقضي: <span id="timeElapsed">00:00</span></span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 📜 قسم السجلات -->
+            <section class="card logs-section">
+                <h2><i class="fas fa-terminal"></i> سجلات النظام</h2>
+                
+                <div class="logs-tools">
+                    <button class="btn-small" id="clearLogs">
+                        <i class="fas fa-broom"></i> مسح السجلات
+                    </button>
+                    <button class="btn-small" id="exportLogs">
+                        <i class="fas fa-download"></i> تصدير
+                    </button>
+                    <select id="logLevel">
+                        <option value="all">جميع السجلات</option>
+                        <option value="success">الناجح فقط</option>
+                        <option value="error">الأخطاء فقط</option>
+                    </select>
+                </div>
+                
+                <div class="logs-container" id="logBox">
+                    <!-- السجلات تظهر هنا -->
+                    <div class="log-entry info">
+                        <span class="log-time">[12:00:00]</span>
+                        <span class="log-message">🌟 النظام جاهز للعمل!</span>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- 🔔 إشعارات -->
+    <div id="notificationContainer"></div>
+
+    <!-- ⚡ قائمة سريعة -->
+    <div class="quick-actions">
+        <button class="quick-btn" title="حفظ الإعدادات"><i class="fas fa-save"></i></button>
+        <button class="quick-btn" title="استعادة إعدادات"><i class="fas fa-undo"></i></button>
+        <button class="quick-btn" title="نسخ احتياطي"><i class="fas fa-database"></i></button>
+        <button class="quick-btn" title="مساعدة"><i class="fas fa-question-circle"></i></button>
+    </div>
+
+    <!-- 🎵 مشغل موسيقى (اختياري) -->
+    <div class="music-player hidden">
+        <audio id="bgMusic" loop>
+            <source src="assets/music.mp3" type="audio/mpeg">
+        </audio>
+        <button class="music-btn"><i class="fas fa-music"></i></button>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script type="module" src="app.js"></script>
 </body>
 </html>
