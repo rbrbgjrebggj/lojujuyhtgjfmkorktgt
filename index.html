@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fortnite 2D - Battle Royale</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            color: white;
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        #gameContainer {
+            position: relative;
+            border: 3px solid #00ff88;
+            border-radius: 10px;
+            box-shadow: 0 0 30px rgba(0, 255, 136, 0.3);
+            overflow: hidden;
+        }
+        
+        #gameCanvas {
+            background: linear-gradient(0deg, #2d3436, #0984e3);
+            display: block;
+        }
+        
+        #hud {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 100;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px;
+            border-radius: 5px;
+            border: 2px solid #00ff88;
+        }
+        
+        .hud-item {
+            margin: 5px 0;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .hud-icon {
+            color: #00ff88;
+            margin-right: 8px;
+            font-size: 20px;
+        }
+        
+        #startScreen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        
+        .title {
+            font-size: 48px;
+            background: linear-gradient(45deg, #00ff88, #0984e3);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 30px;
+            text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+        }
+        
+        .btn {
+            background: linear-gradient(45deg, #00ff88, #0984e3);
+            border: none;
+            color: white;
+            padding: 15px 30px;
+            font-size: 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            margin: 10px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.7);
+        }
+        
+        .controls {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border: 2px solid #00ff88;
+        }
+        
+        .controls h3 {
+            color: #00ff88;
+            margin-bottom: 10px;
+        }
+        
+        .key {
+            display: inline-block;
+            background: #333;
+            padding: 5px 10px;
+            margin: 0 5px;
+            border-radius: 5px;
+            border: 1px solid #00ff88;
+        }
+        
+        #gameOverScreen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        
+        #victoryScreen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+    <h1 class="title">🎮 Fortnite 2D Battle</h1>
+    
+    <div id="gameContainer">
+        <canvas id="gameCanvas" width="800" height="600"></canvas>
+        
+        <div id="hud">
+            <div class="hud-item">
+                <span class="hud-icon">❤️</span>
+                <span id="health">100</span> HP
+            </div>
+            <div class="hud-item">
+                <span class="hud-icon">🛡️</span>
+                <span id="shield">100</span> Shield
+            </div>
+            <div class="hud-item">
+                <span class="hud-icon">🎯</span>
+                Kills: <span id="kills">0</span>
+            </div>
+            <div class="hud-item">
+                <span class="hud-icon">🎒</span>
+                Ammo: <span id="ammo">30</span>
+            </div>
+            <div class="hud-item">
+                <span class="hud-icon">🎮</span>
+                Players: <span id="players">20</span>
+            </div>
+        </div>
+        
+        <div id="startScreen">
+            <h2 class="title">🚀 Battle Royale 2D</h2>
+            <button class="btn" onclick="startGame()">Start Game</button>
+            <button class="btn" onclick="toggleInstructions()">How to Play</button>
+            
+            <div id="instructions" class="controls" style="display: none;">
+                <h3>🎮 Controls:</h3>
+                <p><span class="key">W</span><span class="key">A</span><span class="key">S</span><span class="key">D</span> - Move Player</p>
+                <p><span class="key">SPACE</span> - Jump</p>
+                <p><span class="key">Mouse</span> - Aim</p>
+                <p><span class="key">Left Click</span> - Shoot</p>
+                <p><span class="key">E</span> - Pickup Items</p>
+                <p><span class="key">R</span> - Reload</p>
+                <p><span class="key">1-3</span> - Switch Weapons</p>
+                <button class="btn" onclick="toggleInstructions()">Got it!</button>
+            </div>
+        </div>
+        
+        <div id="gameOverScreen">
+            <h2 class="title" style="color: #ff4757;">💀 Game Over</h2>
+            <p id="gameOverStats" style="font-size: 24px; margin: 20px;"></p>
+            <button class="btn" onclick="restartGame()">Play Again</button>
+        </div>
+        
+        <div id="victoryScreen">
+            <h2 class="title" style="color: #00ff88;">🏆 Victory Royale!</h2>
+            <p id="victoryStats" style="font-size: 24px; margin: 20px;"></p>
+            <button class="btn" onclick="restartGame()">Play Again</button>
+        </div>
+    </div>
+    
+    <script src="game.js"></script>
+</body>
+</html>
